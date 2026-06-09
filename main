@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ストレスチェック</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans JP', sans-serif; }
+
+body {
+  background: #f5f7fa;
+  font-size: 16px;
+}
+
+#wrap {
+  width: 90%;
+  max-width: 500px;
+  margin: 30px auto;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 28px 24px;
+}
+
+h1 {
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+  color: #222;
+  margin-bottom: 16px;
+}
+
+h2 {
+  font-size: 17px;
+  font-weight: 500;
+  text-align: center;
+  color: #222;
+  margin-bottom: 14px;
+}
+
+.progress {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 22px;
+}
+
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, #1D9E75, #5DCAA5);
+  width: 0%;
+  transition: width 0.3s;
+}
+
+.terms-box {
+  font-size: 13px;
+  line-height: 1.8;
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  color: #555;
+  margin-bottom: 14px;
+}
+
+.terms-box p { margin-bottom: 8px; }
+
+.agree-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 16px;
+  justify-content: center;
+}
+
+.agree-box input {
+  width: 18px;
+  height: 18px;
+  accent-color: #1D9E75;
+}
+
+input[type=text] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #333;
+  background: #f9f9f9;
+  margin-bottom: 12px;
+}
+
+.qnum {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.qtext {
+  font-size: 20px;
+  line-height: 1.9;
+  color: #222;
+  text-align: center;
+  margin-bottom: 22px;
+  min-height: 60px;
+}
+
+.btn-primary {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  background: #1D9E75;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.btn-primary:hover { background: #0F6E56; }
+
+.btn-ans {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  background: #f0f0f0;
+  color: #333;
+  font-size: 17px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.btn-ans:hover {
+  background: #1D9E75;
+  color: #fff;
+  transform: scale(1.01);
+}
+
+.btn-back {
+  display: block;
+  width: 100%;
+  padding: 11px;
+  background: transparent;
+  color: #888;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.btn-back:hover { background: #f5f5f5; }
+
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.result-card {
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 14px 10px;
+  text-align: center;
+}
+
+.result-card .rlabel {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 4px;
+}
+
+.result-card .rval {
+  font-size: 22px;
+  font-weight: 500;
+  color: #222;
+}
+
+.result-card .rsub {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 2px;
+}
+
+.stress-high {
+  background: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.stress-high .slabel { font-size: 13px; color: #991B1B; margin-bottom: 4px; }
+.stress-high .sval   { font-size: 17px; font-weight: 500; color: #7F1D1D; }
+
+.stress-ok {
+  background: #F0FDF4;
+  border: 1px solid #86EFAC;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.stress-ok .slabel { font-size: 13px; color: #166534; margin-bottom: 4px; }
+.stress-ok .sval   { font-size: 17px; font-weight: 500; color: #14532D; }
+
+.note {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.8;
+  margin-top: 16px;
+  border-top: 1px solid #eee;
+  padding-top: 14px;
+}
+
+.sub-text {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 400px) {
+  .qtext { font-size: 17px; }
+  .btn-ans { font-size: 15px; padding: 13px; }
+  .result-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="wrap">
+  <h1>ストレスチェック</h1>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+  <div id="app"></div>
+</div>
+
+<script>
+
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwvK7KkzS5g9tPLmT7ZTedVOBzb1svg6l5gx_31_eNQN5fzurluEoYjEmbnQUxlNWZO/exec";
+
+let userId = "", index = 0, answers = [], agreed = false;
+
+const questions = [
+  {cat:"A", text:"非常にたくさんの仕事をしなければならない"},
+  {cat:"A", text:"時間内に仕事が処理しきれない"},
+  {cat:"A", text:"一生懸命働かなければならない"},
+  {cat:"A", text:"かなり注意を集中する必要がある"},
+  {cat:"A", text:"高度な知識や技術が必要"},
+  {cat:"A", text:"勤務時間が長い"},
+  {cat:"A", text:"自分のペースで仕事できない"},
+  {cat:"A", text:"仕事の内容が自分に合わない"},
+  {cat:"A", text:"仕事の量が多すぎる"},
+  {cat:"A", text:"仕事の質が難しすぎる"},
+  {cat:"A", text:"責任が重い"},
+  {cat:"A", text:"職場の人間関係が良くない"},
+  {cat:"A", text:"上司と合わない"},
+  {cat:"A", text:"同僚と合わない"},
+  {cat:"A", text:"職場の雰囲気が悪い"},
+  {cat:"A", text:"仕事の将来が不安"},
+  {cat:"A", text:"評価が公平でない"},
+  {cat:"B", text:"疲れを感じる"},
+  {cat:"B", text:"ぐったりする"},
+  {cat:"B", text:"だるい"},
+  {cat:"B", text:"気分がすぐれない"},
+  {cat:"B", text:"不安だ"},
+  {cat:"B", text:"イライラする"},
+  {cat:"B", text:"落ち着かない"},
+  {cat:"B", text:"ゆううつだ"},
+  {cat:"B", text:"何もやる気が出ない"},
+  {cat:"B", text:"集中できない"},
+  {cat:"B", text:"眠れない"},
+  {cat:"B", text:"朝起きるのがつらい"},
+  {cat:"B", text:"食欲がない"},
+  {cat:"B", text:"頭が重い"},
+  {cat:"B", text:"肩こりがある"},
+  {cat:"B", text:"腰痛がある"},
+  {cat:"B", text:"目が疲れる"},
+  {cat:"B", text:"動悸がする"},
+  {cat:"B", text:"息苦しい"},
+  {cat:"B", text:"胃の調子が悪い"},
+  {cat:"B", text:"下痢や便秘がある"},
+  {cat:"B", text:"めまいがする"},
+  {cat:"B", text:"体がだるい"},
+  {cat:"B", text:"手足がしびれる"},
+  {cat:"B", text:"冷えを感じる"},
+  {cat:"B", text:"汗をかきやすい"},
+  {cat:"B", text:"口が乾く"},
+  {cat:"B", text:"声が出にくい"},
+  {cat:"B", text:"疲労回復しない"},
+  {cat:"C", text:"上司は相談に乗ってくれる"},
+  {cat:"C", text:"同僚は助けてくれる"},
+  {cat:"C", text:"職場の支援がある"},
+  {cat:"C", text:"家族は理解してくれる"},
+  {cat:"C", text:"相談できる人がいる"},
+  {cat:"C", text:"安心して話せる環境がある"},
+  {cat:"C", text:"職場は協力的"},
+  {cat:"C", text:"支援体制が整っている"},
+  {cat:"C", text:"困ったとき助けがある"},
+  {cat:"C", text:"意見を聞いてもらえる"},
+  {cat:"C", text:"孤立していない"}
+];
+
+const A_COUNT = questions.filter(q => q.cat === "A").length;
+const B_COUNT = questions.filter(q => q.cat === "B").length;
+const C_COUNT = questions.filter(q => q.cat === "C").length;
+const A_MAX = A_COUNT * 4;
+const B_MAX = B_COUNT * 4;
+const C_MAX = C_COUNT * 4;
+
+const opts = [
+  {t:"そうだ",      v:4},
+  {t:"まあそうだ",  v:3},
+  {t:"やや違う",    v:2},
+  {t:"違う",        v:1}
+];
+
+function setHTML(html){ document.getElementById("app").innerHTML = html; }
+function setBar(pct){ document.getElementById("bar").style.width = pct + "%"; }
+
+function startScreen(){
+  setBar(0);
+  setHTML(`
+    <h2>利用規約</h2>
+    <div class="terms-box">
+      <p>本ストレスチェックは、従業員のメンタルヘルスの把握および職場環境の改善を目的として実施されます。</p>
+      <p>本チェックの結果は医療診断ではなく、参考情報として提供されるものです。</p>
+      <p>個人の回答内容は適切に管理され、結果は集計・分析された形で取り扱われます。</p>
+      <p>また、法令に基づき必要な範囲を除き、本人の同意なく第三者へ開示されることはありません。</p>
+      <p>本チェックの結果に基づく最終判断は、医師の専門的見解に基づいて行われます。</p>
+    </div>
+    <label class="agree-box">
+      <input type="checkbox" id="agree">
+      <span>利用規約に同意する</span>
+    </label>
+    <button class="btn-primary" onclick="goNext()">次へ</button>
+  `);
+}
+
+function goNext(){
+  if(!document.getElementById("agree").checked){ alert("同意が必要です"); return; }
+  agreed = true;
+  setHTML(`
+    <p class="sub-text">社員番号を入力してください</p>
+    <p class="sub-text" style="font-size:13px;color:#999;">社員番号が不明の場合は会社までご連絡ください。<br>TEL：092-737-3088</p>
+    <br>
+    <input type="text" id="uid" placeholder="社員番号">
+    <button class="btn-primary" onclick="start()">開始する</button>
+  `);
+}
+
+function start(){
+  userId = document.getElementById("uid").value.trim();
+  if(!userId){ alert("社員番号を入力してください"); return; }
+  index = 0; answers = [];
+  render();
+}
+
+function render(){
+  const q = questions[index];
+  setBar(Math.round(index / questions.length * 100));
+  let html = `<div class="qnum">${index + 1} / ${questions.length} 問</div>`;
+  html += `<p class="qtext">${q.text}</p>`;
+  opts.forEach(o => {
+    html += `<button class="btn-ans" onclick="answer(${o.v})">${o.t}</button>`;
+  });
+  if(index > 0){
+    html += `<button class="btn-back" onclick="goBack()">← 前の設問に戻る</button>`;
+  }
+  setHTML(html);
+}
+
+function goBack(){
+  if(index <= 0) return;
+  index--; answers.pop(); render();
+}
+
+function answer(v){
+  answers.push(v);
+  index++;
+  if(index < questions.length){ render(); }
+  else { confirmScreen(); }
+}
+
+function confirmScreen(){
+  setBar(100);
+  setHTML(`
+    <h2>回答完了</h2>
+    <p class="sub-text">全 ${questions.length} 問のご回答ありがとうございます。<br>送信してよろしいですか？</p>
+    <button class="btn-primary" onclick="send()">送信する</button>
+    <button class="btn-back" onclick="goBackFromConfirm()" style="margin-top:10px;">← 最後の設問に戻る</button>
+  `);
+}
+
+function goBackFromConfirm(){
+  index--; answers.pop(); render();
+}
+
+async function send(){
+  setHTML(`<p class="sub-text" style="padding:30px 0;">送信中...</p>`);
+
+  let A = 0, B = 0, C = 0;
+  answers.forEach((v, i) => {
+    if(i < A_COUNT) A += v;
+    else if(i < A_COUNT + B_COUNT) B += v;
+    else C += v;
+  });
+
+  const Apct = Math.round(A / A_MAX * 100);
+  const Bpct = Math.round(B / B_MAX * 100);
+  const Cpct = Math.round(C / C_MAX * 100);
+
+  let highStress = false;
+  if(Bpct >= 66) highStress = true;
+  if(Bpct >= 54 && (Apct >= 67 || Cpct <= 35)) highStress = true;
+
+  const params = new URLSearchParams();
+  params.append("userId",     userId);
+  params.append("A",          A);
+  params.append("B",          B);
+  params.append("C",          C);
+  params.append("highStress", highStress);
+  params.append("agreed",     agreed);
+
+  try {
+    await fetch(GAS_URL, { method:"POST", mode:"no-cors", body:params });
+    showResult(A, B, C, Apct, Bpct, Cpct, highStress);
+  } catch(e) {
+    setHTML(`<h2>送信エラー</h2><p class="sub-text">通信に失敗しました。<br>時間をおいて再度お試しください。</p>`);
+  }
+}
+
+function showResult(A, B, C, Apct, Bpct, Cpct, highStress){
+  const stressClass = highStress ? "stress-high" : "stress-ok";
+  const stressLabel = highStress
+    ? "高ストレスの可能性があります"
+    : "現時点で高ストレスではありません";
+  const stressNote = highStress
+    ? "産業医または担当者より、面談のご案内を差し上げる場合があります。"
+    : "引き続き体調や心身の変化にご注意ください。";
+
+  setHTML(`
+    <h2>チェック結果</h2>
+    <div class="${stressClass}">
+      <div class="slabel">総合判定</div>
+      <div class="sval">${stressLabel}</div>
+    </div>
+    <div class="result-grid">
+      <div class="result-card">
+        <div class="rlabel">A：仕事の負荷</div>
+        <div class="rval">${Apct}%</div>
+        <div class="rsub">${A} / ${A_MAX} 点</div>
+      </div>
+      <div class="result-card">
+        <div class="rlabel">B：心身の状態</div>
+        <div class="rval">${Bpct}%</div>
+        <div class="rsub">${B} / ${B_MAX} 点</div>
+      </div>
+      <div class="result-card">
+        <div class="rlabel">C：サポート</div>
+        <div class="rval">${Cpct}%</div>
+        <div class="rsub">${C} / ${C_MAX} 点</div>
+      </div>
+    </div>
+    <p class="sub-text">${stressNote}</p>
+    <div class="note">
+      本結果は医療診断ではなく、簡易的な参考情報です。<br>
+      結果は会社の産業医に共有され、適切な対応が行われます。<br>
+      気になる症状がある場合は、医療機関へのご相談もご検討ください。<br><br>
+      ブラウザを閉じてください。
+    </div>
+  `);
+}
+
+startScreen();
+</script>
+
+</body>
+</html>
